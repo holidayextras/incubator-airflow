@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# MHS Test Commit
+#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -228,6 +228,17 @@ class S3Hook(BaseHook):
         :type bucket_name: str
         """
         return self.connection.get_bucket(bucket_name)
+
+    def delete_key(self, bucket_name, key_name):
+        """
+        Deletes a key from a boto.s3.bucket.Bucket object
+
+        :param bucket_name: the name of the bucket
+        :type bucket_name: str
+        :type keyname: str
+        """
+        bucket = self.connection.get_bucket(bucket_name)
+        bucket.delete_key(key_name)
 
     def list_keys(self, bucket_name, prefix='', delimiter=''):
         """
