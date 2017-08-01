@@ -116,6 +116,29 @@ class GoogleCloudStorageHook(GoogleCloudBaseHook):
         return downloaded_file_bytes
 
     # pylint:disable=redefined-builtin
+    def upload_with_resume(self, bucket, object, filename, mime_type='application/octet-stream'):
+        """
+        Uploads a local file to Google Cloud Storage.
+
+        :param bucket: The bucket to upload to.
+        :type bucket: string
+        :param object: The object name to set when uploading the local file.
+        :type object: string
+        :param filename: The local file path to the file to be uploaded.
+        :type filename: string
+        :param mime_type: The MIME type to set when uploading the file.
+        :type mime_type: string
+        """
+        service = self.get_conn()
+        media = MediaFileUpload(filename, mime_type, resumable=True)
+        request = service \
+            .objects() \
+            .insert(bucket=bucket, name=object, media_body=media) 
+        response = None
+        while response is None:
+            status, response = request.next_chunk()
+
+    # pylint:disable=redefined-builtin
     def upload(self, bucket, object, filename, mime_type='application/octet-stream'):
         """
         Uploads a local file to Google Cloud Storage.
